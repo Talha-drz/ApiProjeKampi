@@ -1,5 +1,9 @@
 ﻿using ApiProjeKampi.WebApi.Context;
+using ApiProjeKampi.WebApi.Dtos.CategoryDtos;
+using ApiProjeKampi.WebApi.Dtos.ContactDtos;
+using ApiProjeKampi.WebApi.Dtos.FeatureDtos;
 using ApiProjeKampi.WebApi.Entities;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,10 +14,11 @@ namespace ApiProjeKampi.WebApi.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ApiContext _context;
-
-        public CategoriesController(ApiContext context)
+               private readonly IMapper _mapper;
+        public CategoriesController(ApiContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
         [HttpGet]
         public IActionResult CategoryList()
@@ -22,9 +27,10 @@ namespace ApiProjeKampi.WebApi.Controllers
             return Ok(list);
         }
         [HttpPost]
-        public IActionResult CreateCategory(Category category)
+        public IActionResult CreateCategory(CreateCategoryDto createCategoryDto)
         {
-            _context.Categories.Add(category);
+            var value = _mapper.Map<Category>(createCategoryDto);
+            _context.Categories.Add(value);
             _context.SaveChanges();
             return Ok("Kategori Ekleme İşlei Başarılı");
         }
@@ -43,11 +49,12 @@ namespace ApiProjeKampi.WebApi.Controllers
             return Ok(value);
         }
         [HttpPut]
-        public IActionResult UpdateCategory(Category category)
+        public IActionResult UpdateCategory(UpdateCategoryDto updateCategoryDto)
         {
-          _context.Categories.Update(category);
+            var value = _mapper.Map<About>(updateCategoryDto);
+            _context.Abouts.Update(value);
             _context.SaveChanges();
-            return Ok("Kategori Güncelleme İşlei Başarılı");
-        } 
+            return Ok("Kategori güncelleme işlemi başarılı");
+        }
     }
 }
